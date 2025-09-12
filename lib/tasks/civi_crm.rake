@@ -81,16 +81,16 @@ namespace :civi_crm do
 
     desc "Generates a YAML file with the relationship between CiviCRM Contacts of sub_type 'Local' and sub_type 'Comarcal' or 'Regional'"
     task decidim_scopes_mapping: :environment do
-      comarcal_exception_ids = load_config_yaml("comarcal_exceptions").keys
-      local_comarcal_rel = load_config_yaml("local_comarcal_relationships")
+      # comarcal_exception_ids = load_config_yaml("comarcal_exceptions").keys
+      # local_comarcal_rel = load_config_yaml("local_comarcal_relationships")
       local_regional_rel = load_config_yaml("local_regional_relationships")
 
-      local_exception_ids = local_comarcal_rel.each_with_object([]) do |(local_id, comarcal_id), arr|
-        arr << local_id if comarcal_exception_ids.include?(comarcal_id)
-      end
+      # local_exception_ids = local_comarcal_rel.each_with_object([]) do |(local_id, comarcal_id), arr|
+      #   arr << local_id if comarcal_exception_ids.include?(comarcal_id)
+      # end
 
       result = local_regional_rel.each_with_object({}) do |(local_id, regional_id), hsh|
-        hsh[local_id] = local_exception_ids.include?(local_id) ? local_comarcal_rel[local_id] : regional_id
+        hsh[local_id] = regional_id
       end
 
       write_config_yaml!("decidim_scopes_mapping", result)
@@ -103,11 +103,34 @@ namespace :civi_crm do
 
   namespace :create do
     desc "Creates `Decidim::Scope`s from the CiviCRM Contacts of type 'Organization' and sub_type 'Comarcal'"
-    task scopes: :environment do
+    task scopes_by_comarcal: :environment do
       next unless (organization = Decidim::Organization.first)
 
       comarcals = load_config_yaml("comarcal_exceptions")
       create_scopes_from_contacts!(comarcals, organization)
+      regionals = load_config_yaml("regionals")
+      create_scopes_from_contacts!(regionals, organization)
+      puts "All `Decidim::Scope`s are in place"
+    end
+
+    def create_scopes_from_contacts!(contacts, organization)
+      contacts.each do |contact_id, display_name|
+        next if display_name[/\d/]
+
+        scope_name = display_name.strip
+        scope = Decidim::Scope.find_or_initialize_by(
+          organization:,
+          code: contact_id
+        )
+        scope.name = { "ca" => scope_name, "en" => scope_name, "es" => scope_name }
+        scope.save!
+      end
+    end
+
+    desc "Creates `Decidim::Scope`s from the CiviCRM Contacts of type 'Organization' and sub_type 'Regional'"
+    task scopes_by_regional: :environment do
+      next unless (organization = Decidim::Organization.first)
+
       regionals = load_config_yaml("regionals")
       create_scopes_from_contacts!(regionals, organization)
       puts "All `Decidim::Scope`s are in place"
