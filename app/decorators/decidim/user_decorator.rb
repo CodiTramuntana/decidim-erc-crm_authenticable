@@ -27,11 +27,10 @@ module Decidim::UserDecorator
       # Checks if the user is authorized against CiviCRM.
       # Returns a boolean.
       def crm_authorized?
-        byebug
         Decidim::Authorization.exists?(user: self, name: "crm_authenticable_authorization_handler")
       end
     end
   end
 end
 
-::Decidim::UserDecorator.decorate
+Decidim::UserDecorator.decorate

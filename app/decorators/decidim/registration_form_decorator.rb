@@ -18,7 +18,7 @@ module Decidim::RegistrationFormDecorator
         {
           phone_number: Base64.strict_encode64(phone_number || ""),
           document_number:,
-          member_of_code:,
+          member_of_code:
         }
       end
 

@@ -50,4 +50,4 @@ module Decidim::CreateRegistrationDecorator
   end
 end
 
-::Decidim::CreateRegistrationDecorator.decorate
+Decidim::CreateRegistrationDecorator.decorate
