@@ -53,7 +53,7 @@ rake erc_auth:csv_import:local_comarcal_relationships
 rake erc_auth:csv_import:local_regional_relationships 
 rake civi_crm:generate:comarcal_exceptions  
 rake civi_crm:generate:decidim_scopes_mapping
-rake civi_crm:create:scopes 
+rake civi_crm:create:scopes
 ```
 
 ## 1. rake erc_auth:csv_import:comarcals
