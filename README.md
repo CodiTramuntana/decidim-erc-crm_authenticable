@@ -74,6 +74,9 @@ Run the following in the gem development path to create the test app:
 ```bash
 $ bundle
 $ bundle exec rake test_app
+$ cd spec/decidim_dummy_app/
+$ bundle exec rails decidim_erc_crm_authenticable:install:migrations
+$ RAILS_ENV=test bundle exec rails db:migrate
 $ bundle exec rake civi_crm:configure_secrets
 ```
 Note that the database user has to have rights to create and drop a database in order to create the dummy test app database.

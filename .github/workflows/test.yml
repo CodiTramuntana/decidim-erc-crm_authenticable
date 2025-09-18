@@ -57,8 +57,11 @@ jobs:
       - name: Create test app
         run: |
           bundle exec rake test_app
+          cd spec/decidim_dummy_app/
+          bundle exec rails decidim_erc_crm_authenticable:install:migrations
+          RAILS_ENV=test bundle exec rails db:migrate
 
-      - name: set crm authenticable configuration values
+      - name: Set crm authenticable configuration values
         run: bundle exec rake civi_crm:configure_secrets
 
       - name: Run RSpec
