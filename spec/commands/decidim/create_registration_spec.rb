@@ -7,7 +7,7 @@ module Decidim
     describe CreateRegistration do
       describe "call" do
         let(:organization) { create(:organization) }
-        let!(:scope) { create(:scope, organization: organization, code: "custom_21") }
+        let!(:scope) { create(:scope, organization:, code: "custom_21") }
 
         let(:form) do
           RegistrationForm.from_params(params).with_context(current_organization: organization)
@@ -19,15 +19,15 @@ module Decidim
               nickname: "nickname",
               email: "user@example.org",
               password: "Y1fERVzL2F",
-              password_confirmation: "Y1fERVzL2F",
               tos_agreement: "1",
-              newsletter_at: "1"
+              current_locale: "ca",
+              newsletter: "1"
             }.merge(extended_data)
           }
         end
         let(:extended_data) do
           {
-            phone_number: phone_number,
+            phone_number:,
             document_number: Base64.strict_encode64("123456789A"),
             member_of_code: scope.code
           }
@@ -46,14 +46,13 @@ module Decidim
               nickname: form.nickname,
               email: form.email,
               password: form.password,
-              password_confirmation: form.password_confirmation,
               tos_agreement: form.tos_agreement,
               newsletter_notifications_at: form.newsletter_at,
               email_on_notification: true,
-              organization: organization,
+              organization:,
               accepted_tos_version: organization.tos_version,
               extended_data: extended_data.merge(phone_number: Base64.strict_encode64(phone_number)),
-              scope: scope
+              scope:
             ).and_call_original
 
             expect { command.call }.to change(User, :count).by(1)

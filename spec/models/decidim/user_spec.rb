@@ -8,8 +8,8 @@ module Decidim
 
     let(:handler_name) { Decidim::Erc::CrmAuthenticable::CrmAuthenticableAuthorizationHandler.handler_name }
     let(:organization) { create(:organization, available_authorizations: [handler_name]) }
-    let(:scope) { create(:scope, organization: organization) }
-    let(:user) { create(:user, admin: admin, scope: scope, organization: organization, extended_data: extended_data) }
+    let(:scope) { create(:scope, organization:) }
+    let(:user) { create(:user, admin:, scope:, organization:, extended_data:) }
     let(:admin) { false }
     let(:extended_data) { { "document_number" => Base64.strict_encode64("123456789A") } }
 
@@ -19,7 +19,7 @@ module Decidim
       subject { user.valid? }
 
       context "with scope" do
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
 
       context "without scope" do
@@ -28,7 +28,7 @@ module Decidim
         context "when user is admin" do
           let(:admin) { true }
 
-          it { is_expected.to eq(true) }
+          it { is_expected.to be(true) }
         end
 
         context "when user is NOT admin (default)" do
@@ -41,7 +41,7 @@ module Decidim
       context "with a nickname made of initials" do
         before { user.nickname = user.name.split.map { |w| w.chars.first }.join }
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
     end
 
@@ -49,15 +49,15 @@ module Decidim
       subject { user.crm_authorized? }
 
       context "when the user is NOT authorized" do
-        it { is_expected.to eq(false) }
+        it { is_expected.to be(false) }
       end
 
       context "when the user is authorized" do
         before do
-          create(:authorization, name: handler_name, user: user, granted_at: 1.day.ago)
+          create(:authorization, name: handler_name, user:, granted_at: 1.day.ago)
         end
 
-        it { is_expected.to eq(true) }
+        it { is_expected.to be(true) }
       end
     end
 
@@ -70,7 +70,7 @@ module Decidim
 
         before { stub_invalid_request_not_member }
 
-        it { is_expected.to include(authorized: false, error: error) }
+        it { is_expected.to include(authorized: false, error:) }
       end
 
       context "when document_number NOT is valid against CiviCRM" do
@@ -78,7 +78,7 @@ module Decidim
 
         before { stub_invalid_request_not_member }
 
-        it { is_expected.to include(authorized: false, error: error) }
+        it { is_expected.to include(authorized: false, error:) }
       end
 
       context "when document_number is valid against CiviCRM" do
@@ -92,7 +92,7 @@ module Decidim
 
         before { stub_invalid_request_connection_error }
 
-        it { is_expected.to include(authorized: false, error: error) }
+        it { is_expected.to include(authorized: false, error:) }
       end
     end
   end

@@ -37,7 +37,7 @@ ca:
           already_have_an_account?: Ja t’has enregistrat?
           document_number_placeholder: 'Exemple: 123456789A'
           send: Sol·licita verificació
-          subtitle: Benvingut/da a Decidim Esquerra Republicana, la plataforma que
+          subtitle_html: Benvingut/da a Decidim Esquerra Republicana, la plataforma que
             et permetrà participar del debat d’esmenes en relació al Plenari del 28è
             Congrés Nacional d’Esquerra Republicana. <br/><br/> Abans de registrar-te
             a Decidim Esquerra Republicana, verifica el número del teu document d’identitat

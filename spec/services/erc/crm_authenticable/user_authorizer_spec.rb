@@ -7,14 +7,14 @@ module Decidim
     module CrmAuthenticable
       describe UserAuthorizer do
         let!(:organization) { create(:organization) }
-        let!(:scope) { create(:scope, code: "custom_21", organization: organization) }
-        let(:user) { create(:user, scope: scope, organization: organization, extended_data: extended_data) }
+        let!(:scope) { create(:scope, code: "custom_21", organization:) }
+        let(:user) { create(:user, scope:, organization:, extended_data:) }
         let(:extended_data) { { "document_number" => Base64.strict_encode64("123456789A") } }
         let(:handler_name) { Decidim::Erc::CrmAuthenticable::CrmAuthenticableAuthorizationHandler.handler_name }
 
         shared_examples_for "deleting an authorization" do
           it "deletes an existing `CrmAuthenticable` authorization for the user" do
-            authorization = create(:authorization, name: handler_name, user: user)
+            authorization = create(:authorization, name: handler_name, user:)
 
             expect { subject }.to change {
               Decidim::Authorization.exists?(authorization.id)
@@ -35,7 +35,7 @@ module Decidim
             end
 
             it "updates an existing `CrmAuthenticable` authorization for the user" do
-              authorization = create(:authorization, name: handler_name, user: user, granted_at: 1.day.ago)
+              authorization = create(:authorization, name: handler_name, user:, granted_at: 1.day.ago)
 
               expect { subject }.to(change { authorization.reload.granted_at })
             end
@@ -46,7 +46,7 @@ module Decidim
 
             before { stub_invalid_request_not_member }
 
-            it { is_expected.to include(authorized: false, error: error) }
+            it { is_expected.to include(authorized: false, error:) }
 
             it_behaves_like "deleting an authorization"
           end
@@ -56,7 +56,7 @@ module Decidim
 
             before { stub_invalid_request_connection_error }
 
-            it { is_expected.to include(authorized: false, error: error) }
+            it { is_expected.to include(authorized: false, error:) }
 
             it_behaves_like "deleting an authorization"
           end
@@ -67,7 +67,7 @@ module Decidim
 
             before { stub_invalid_request_not_member }
 
-            it { is_expected.to include(authorized: false, error: error) }
+            it { is_expected.to include(authorized: false, error:) }
 
             it_behaves_like "deleting an authorization"
           end

@@ -8,9 +8,9 @@ module Decidim
     module CrmAuthenticable
       describe CrmAuthenticableAuthorizationHandler do
         let(:handler) { described_class.new(params) }
-        let(:params) { { user: user, document_number: document_number } }
+        let(:params) { { user:, document_number: } }
         let(:scope) { create(:scope) }
-        let(:user) { create(:user, scope: scope, organization: scope.organization) }
+        let(:user) { create(:user, scope:, organization: scope.organization) }
         let(:document_number) { "123456789A" }
 
         it_behaves_like "an authorization handler"
@@ -70,13 +70,13 @@ module Decidim
           end
 
           context "when document_number is valid against CSV" do
-            it { is_expected.to eq(true) }
+            it { is_expected.to be(true) }
           end
 
           context "when document_number NOT is valid against CSV" do
             let(:document_number) { "444444444M" }
 
-            it { is_expected.to eq(false) }
+            it { is_expected.to be(false) }
           end
         end
 
@@ -84,45 +84,45 @@ module Decidim
           context "when document_number format is not valid" do
             let(:document_number) { "(╯°□°）╯︵ ┻━┻" }
 
-            it { is_expected.to eq(false) }
+            it { is_expected.to be(false) }
           end
 
           context "when document_number is NOT valid against CiviCRM" do
             context "and does not find a contact" do
               before { stub_invalid_request_not_member }
 
-              it { is_expected.to eq(false) }
+              it { is_expected.to be(false) }
             end
 
             context "and contact has invalid membership name" do
               before { stub_invalid_request_not_militant }
 
-              it { is_expected.to eq(false) }
+              it { is_expected.to be(false) }
             end
 
             context "and contact has invalid membership status_id" do
               before { stub_invalid_request_was_member }
 
-              it { is_expected.to eq(false) }
+              it { is_expected.to be(false) }
             end
 
             context "and contact has invalid membership join_date" do
               before { stub_invalid_request_not_enough_seniority }
 
-              it { is_expected.to eq(false) }
+              it { is_expected.to be(false) }
             end
           end
 
           context "when document_number is valid against CiviCRM" do
             before { stub_valid_request }
 
-            it { is_expected.to eq(true) }
+            it { is_expected.to be(true) }
           end
 
           context "when it fails to connect to CiviCRM" do
             before { stub_invalid_request_connection_error }
 
-            it { is_expected.to eq(false) }
+            it { is_expected.to be(false) }
           end
         end
 
@@ -140,7 +140,7 @@ module Decidim
           context "when no document number" do
             let(:document_number) { nil }
 
-            it { is_expected.to eq(false) }
+            it { is_expected.to be(false) }
           end
 
           it_behaves_like "validate document_number against CiviCRM"

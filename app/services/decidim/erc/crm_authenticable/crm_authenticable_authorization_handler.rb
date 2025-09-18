@@ -67,10 +67,10 @@ module Decidim
               body:
               [
                 {
-                  "display_name": user[1],
-                  "email": user[2],
-                  "phone": user[3],
-                  "custom_21": user[4]
+                  display_name: user[1],
+                  email: user[2],
+                  phone: user[3],
+                  custom_21: user[4]
                 }.transform_keys(&:to_s)
               ]
             }
@@ -90,7 +90,7 @@ module Decidim
         def valid_membership?
           @membership = begin
             contact = response.dig(:body, 0)
-            return if contact.blank?
+            return false if contact.blank?
 
             memberships = contact.dig("api.Membership.get", "values")
             memberships.find do |mbsp|

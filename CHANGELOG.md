@@ -1,5 +1,9 @@
 # Changelog
 
+### Version 2.0.0
+- Upgrade to Decidim 0.28 as minimum version
+- Upgrade to Ruby 3.2.2
+
 ### Version 1.2.0
 - Upgrade to Decidim 0.24
 

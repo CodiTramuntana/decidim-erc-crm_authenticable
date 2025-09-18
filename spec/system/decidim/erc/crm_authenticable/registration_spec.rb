@@ -4,7 +4,7 @@ require "spec_helper"
 
 describe "Registration", type: :system do
   let(:organization) { create(:organization, force_users_to_authenticate_before_access_organization: true) }
-  let!(:scope) { create(:scope, organization: organization, code: "custom_21") }
+  let!(:scope) { create(:scope, organization:, code: "custom_21") }
 
   before do
     switch_to_host(organization.host)
@@ -48,7 +48,6 @@ describe "Registration", type: :system do
           expect(page).to have_field("user_email", with: "john.doe@example.org", readonly: true)
           expect(page).to have_field("user_phone_number", with: "666-666-666", readonly: true)
           expect(page).to have_field("user_password", with: "")
-          expect(page).to have_field("user_password_confirmation", with: "")
         end
       end
 
@@ -56,7 +55,6 @@ describe "Registration", type: :system do
         before do
           within "#register-form-step-2" do
             fill_in :user_password, with: "rPYWYKQJrXm97b4ytswc"
-            fill_in :user_password_confirmation, with: "rPYWYKQJrXm97b4ytswc"
             check :user_tos_agreement
           end
           click_button "Sign up"
@@ -89,7 +87,6 @@ describe "Registration", type: :system do
         before do
           within "#register-form-step-2" do
             fill_in :user_password, with: "rPYWYKQJrXm97b4ytswc"
-            fill_in :user_password_confirmation, with: "rPYWYKQJrXm97b4ytswc"
             check :user_tos_agreement
           end
           click_button "Sign up"

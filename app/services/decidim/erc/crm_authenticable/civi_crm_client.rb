@@ -49,7 +49,7 @@ module Decidim
 
           hsh = JSON.parse(response)
           {
-            error: hsh["is_error"].positive? ? true : false,
+            error: hsh["is_error"].positive?,
             body: hsh["values"]
           }
         end
@@ -61,7 +61,7 @@ module Decidim
             action: "get",
             api_key: credentials[:api_key],
             key: credentials[:site_key],
-            json: json
+            json:
           }.map { |k, v| "#{k}=#{v}" }.join("&")
         end
 
@@ -71,7 +71,7 @@ module Decidim
             sequential: 1,
             return: USER_DATA.join(","),
             custom_4: document_number,
-            'api.Membership.get': {
+            "api.Membership.get": {
               only_active: "yes"
             }
           }.to_json
@@ -83,7 +83,7 @@ module Decidim
             sequential: 1,
             options: { limit: 0 },
             contact_type: "Organization",
-            contact_sub_type: contact_sub_type,
+            contact_sub_type:,
             return: "contact_id,display_name"
           }.to_json
         end
@@ -96,7 +96,7 @@ module Decidim
             contact_type: "Organization",
             contact_sub_type: "Local",
             return: "contact_id",
-            'api.Relationship.get': {
+            "api.Relationship.get": {
               contact_id_a: "$value.contact_id",
               return: "contact_id_b"
             }

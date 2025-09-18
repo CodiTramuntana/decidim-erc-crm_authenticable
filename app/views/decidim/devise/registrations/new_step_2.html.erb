@@ -4,132 +4,121 @@
   <%= render "decidim/devise/shared/links" %>
 <% end %>
 
-<main class="wrapper">
-<div class="row collapse">
-  <div class="row collapse">
-    <div class="columns large-8 large-centered text-center page-title">
-      <h1><%= t(".sign_up") %></h1>
-      <p>
-        <%= t(".subtitle") %>
-      </p>
-      <p>
-        <%= t(".already_have_an_account?") %>
-        <%= link_to t(".sign_in"), new_user_session_path %>
-      </p>
-    </div>
+<%= render layout: "layouts/decidim/shared/layout_center" do %>
+  <div class="flex justify-center">
+    <h1 class="title-decorator my-12"><%= t("decidim.devise.registrations.new.sign_up") %></h1>
   </div>
 
-  <%= render "decidim/devise/shared/omniauth_buttons" %>
+  <div class="login__info">
+    <p>
+      <%= t("decidim.devise.registrations.new.subtitle") %>
+    </p>
+    <p class="font-semibold">
+      <%= t("decidim.devise.registrations.new.already_have_an_account?") %>
+      <%= link_to t("decidim.devise.registrations.new.log_in"), new_user_session_path %>
+    </p>
+  </div>
 
-  <div class="row">
-    <div class="columns large-6 medium-10 medium-centered">
-      <%= cell("decidim/announcement", {announcement: t(".update_user_data_help"), callout_class: "warning"}) %>
+  <div class="login__info-required">
+    <%= form_required_explanation %>
+  </div>
 
-      <%= decidim_form_for(@form, as: resource_name, url: registration_path(resource_name), html: { class: "register-form new_user", id: "register-form-step-2" }) do |f| %>
-        <%= invisible_captcha %>
-        <div class="card">
-          <div class="card__content">
-            <div class="field">
-              <%= f.text_field :name, readonly: true %>
-            </div>
+  <span class="login__info-separator"></span>
 
-            <div class="field">
-              <%= f.email_field :email, readonly: true %>
-            </div>
+  <% cache current_organization do %>
+    <%= render "decidim/devise/shared/omniauth_buttons" %>
+  <% end %>
 
-            <!-- New fields -->
-            <div class="field">
-              <%= f.text_field :phone_number, help_text: t(".phone_number_help"), readonly: true %>
-            </div>
-            <%= f.hidden_field :document_number %>
-            <%= f.hidden_field :member_of_code %>
-            <!-- /New fields -->
+  <%= decidim_form_for(@form, namespace: "registration", as: resource_name, url: registration_path(resource_name), html: { id: "register-form-step-2" }) do |f| %>
+    <%= invisible_captcha %>
 
-            <div class="field">
-              <%= f.text_field :nickname, help_text: t(".nickname_help", organization: current_organization.name), readonly: true %>
-            </div>
+    <div class="form__wrapper">
+      <%= f.text_field :name, help_text: t("decidim.devise.registrations.new.username_help"), autocomplete: "name", placeholder: "John Doe" %>
 
-            <div class="field">
-              <%= f.password_field :password, help_text: t(".password_help", minimun_characters: NOBSPW.configuration.min_password_length), autocomplete: "off" %>
-            </div>
+      <%= f.email_field :email, autocomplete: "email", placeholder: t("placeholder_email", scope: "decidim.devise.shared") %>
 
-            <div class="field">
-              <%= f.password_field :password_confirmation %>
-            </div>
-          </div>
-        </div>
+      <!-- New fields -->
+      <div class="field">
+        <%= f.text_field :phone_number, label: t("decidim.devise.registrations.new_step_2.phone_number"), help_text: t("decidim.devise.registrations.new_step_2.phone_number_help"), readonly: true %>
+      </div>
+      <%= f.hidden_field :document_number %>
+      <%= f.hidden_field :member_of_code %>
+      <!-- /New fields -->
+
+      <%= render partial: "decidim/account/password_fields", locals: { form: f, user: :user } %>
+    </div>
+
+    <div id="card__tos" class="form__wrapper-block">
+      <div>
+        <% terms_of_service_summary_content_blocks.each do |content_block| %>
+          <%= cell content_block.manifest.cell, content_block %>
+        <% end %>
+      </div>
 
         <div class="card" id="card__tos">
-          <div class="card__content">
-            <legend><%= t(".tos_title") %></legend>
+        <div class="card__content">
+          <legend><%= t("decidim.devise.registrations.new.tos_title") %></legend>
 
-            <table class="tos-text" style="width:100%">
-                <tbody>
-                  <tr>
-                    <th colspan="2">Informació bàsica sobre Protecció de dades</th>
-                  </tr>
-                  <tr>
-                    <th>Responsable</th>
-                    <td>Esquerra Republicana de Catalunya.</td>
-                  </tr>
-                  <tr>
-                    <th>Contacte DPO</th>
-                    <td>Pots contactar amb la persona Delegada de Protecció de Dades al correu-e: delegatpd@esquerra.cat.</td>
-                  </tr>
-                  <tr>
-                    <th>Finalitat</th>
-                    <td>Gestió administrativa, organitzativa i d’enviament d’informació relacionada amb el Plenari del Congrés Nacional.</td>
-                  </tr>
-                  <tr>
-                    <th>Legitimació</th>
-                    <td>Consentiment de la persona interessada, al marcar la casella d’acceptació de la Política de protecció de dades.</td>
-                  </tr>
-                  <tr>
-                    <th>Cessió a tercers</th>
-                    <td>No es cediran dades a tercers, excepte per obligació legal.</td>
-                  </tr>
-                  <tr>
-                    <th>Drets</th>
-                    <td>Accedir, rectificar i suprimir les dades, així com, altres drets que s’expliquen a la informació addicional.</td>
-                  </tr>
-                  <tr>
-                    <th>Informació addicional</th>
-                    <td>Pots consultar la informació addicional i detallada sobre protecció de dades a la pàgina web d’Esquerra Republicana: https://www.esquerra.cat/ca/politicaprotecciodades</td>
-                  </tr>
-                </tbody>
-              </table>
+          <table class="tos-text" style="width:100%">
+            <tbody>
+              <tr>
+                <th colspan="2">Informació bàsica sobre Protecció de dades</th>
+              </tr>
+              <tr>
+                <th>Responsable</th>
+                <td>Esquerra Republicana de Catalunya.</td>
+              </tr>
+              <tr>
+                <th>Contacte DPO</th>
+                <td>Pots contactar amb la persona Delegada de Protecció de Dades al correu-e: delegatpd@esquerra.cat.</td>
+              </tr>
+              <tr>
+                <th>Finalitat</th>
+                <td>Gestió administrativa, organitzativa i d’enviament d’informació relacionada amb el Plenari del Congrés Nacional.</td>
+              </tr>
+              <tr>
+                <th>Legitimació</th>
+                <td>Consentiment de la persona interessada, al marcar la casella d’acceptació de la Política de protecció de dades.</td>
+              </tr>
+              <tr>
+                <th>Cessió a tercers</th>
+                <td>No es cediran dades a tercers, excepte per obligació legal.</td>
+              </tr>
+              <tr>
+                <th>Drets</th>
+                <td>Accedir, rectificar i suprimir les dades, així com, altres drets que s’expliquen a la informació addicional.</td>
+              </tr>
+              <tr>
+                <th>Informació addicional</th>
+                <td>Pots consultar la informació addicional i detallada sobre protecció de dades a la pàgina web d’Esquerra Republicana: https://www.esquerra.cat/ca/politicaprotecciodades</td>
+              </tr>
+            </tbody>
+          </table>
 
-            <div class="field">
-              <%= f.check_box :tos_agreement, label: t(".tos_agreement", link: link_to(t(".terms"), "https://www.esquerra.cat/ca/politicaprotecciodades")) %>
-            </div>
-
-            <p>Rebràs un correu electrònic de confirmació un cop premis el botó de Registra’t</p>
+          <div class="field">
+            <%= f.check_box :tos_agreement, label: t("decidim.devise.registrations.new.tos_agreement", link: link_to(t("decidim.devise.registrations.new_step_2.terms"), "https://www.esquerra.cat/ca/politicaprotecciodades")) %>
           </div>
+          <p>Rebràs un correu electrònic de confirmació un cop creïs el teu compte.</p>
         </div>
-
-        <div class="card" id="card__newsletter">
-          <div class="card__content">
-            <legend><%= t(".newsletter_title") %></legend>
-
-            <fieldset>
-              <div class="field">
-                <%= f.check_box :newsletter, label: t(".newsletter"), checked: @form.newsletter %>
-              </div>
-            </fieldset>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card__content">
-            <div class="actions">
-              <%= f.submit t("devise.registrations.new.sign_up"), class: "button expanded" %>
-            </div>
-            <%= yield :devise_links %>
-          </div>
-        </div>
-      <% end %>
+      </div>
     </div>
-  </div>
-</div>
-</main>
+
+    <div id="card__newsletter" class="form__wrapper-block">
+      <h2 class="h4"><%= t("decidim.devise.registrations.new.newsletter_title") %></h2>
+      <%= f.check_box :newsletter, label: t("decidim.devise.registrations.new.newsletter"), checked: @form.newsletter, label_options: { class: "form__wrapper-checkbox-label" } %>
+    </div>
+
+    <div class="form__wrapper-block">
+      <button type="submit" class="button button__lg button__secondary">
+        <%= t("decidim.devise.registrations.new.sign_up") %>
+        <%= icon "arrow-right-line", class: "fill-current" %>
+      </button>
+    </div>
+
+    <div class="login__links">
+      <%= render "decidim/devise/shared/links" %>
+    </div>
+  <% end %>
+<% end %>
+
 <%= render "decidim/devise/shared/newsletter_modal" %>

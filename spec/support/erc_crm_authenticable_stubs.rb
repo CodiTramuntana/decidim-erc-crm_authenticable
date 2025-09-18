@@ -4,7 +4,7 @@ module ErcCrmAuthenticableStubs
   def stub_valid_request
     stub_request(:get, file_fixture("request.txt").read)
       .with(
-        headers: headers
+        headers:
       ).to_return(
         status: 200,
         body: file_fixture("valid_response.txt").read,
@@ -15,7 +15,7 @@ module ErcCrmAuthenticableStubs
   def stub_invalid_request_not_member
     stub_request(:get, file_fixture("request.txt").read)
       .with(
-        headers: headers
+        headers:
       ).to_return(
         status: 200,
         body: file_fixture("invalid_response_not_member.txt").read,
@@ -26,7 +26,7 @@ module ErcCrmAuthenticableStubs
   def stub_invalid_request_not_militant
     stub_request(:get, file_fixture("request.txt").read)
       .with(
-        headers: headers
+        headers:
       ).to_return(
         status: 200,
         body: file_fixture("invalid_response_mbsp_name.txt").read,
@@ -37,7 +37,7 @@ module ErcCrmAuthenticableStubs
   def stub_invalid_request_was_member
     stub_request(:get, file_fixture("request.txt").read)
       .with(
-        headers: headers
+        headers:
       ).to_return(
         status: 200,
         body: file_fixture("invalid_response_mbsp_status_id.txt").read,
@@ -48,7 +48,7 @@ module ErcCrmAuthenticableStubs
   def stub_invalid_request_not_enough_seniority
     stub_request(:get, file_fixture("request.txt").read)
       .with(
-        headers: headers
+        headers:
       ).to_return(
         status: 200,
         body: file_fixture("invalid_response_mbsp_join_date.txt").read,
@@ -59,7 +59,7 @@ module ErcCrmAuthenticableStubs
   def stub_invalid_request_connection_error
     stub_request(:get, file_fixture("request.txt").read)
       .with(
-        headers: headers
+        headers:
       ).to_return(
         status: 200,
         body: file_fixture("invalid_response_connection_error.txt").read,

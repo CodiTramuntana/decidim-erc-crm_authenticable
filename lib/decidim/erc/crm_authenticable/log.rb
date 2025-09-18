@@ -7,7 +7,7 @@ module Decidim
       class Log
         def self.log
           if @logger.nil?
-            @logger = Logger.new(Rails.root.join("log", "crm_authenticable.log"))
+            @logger = Logger.new(Rails.root.join("log/crm_authenticable.log"))
             @logger.level = Logger::DEBUG
             @logger.datetime_format = "%Y-%m-%d %H:%M:%S "
           end

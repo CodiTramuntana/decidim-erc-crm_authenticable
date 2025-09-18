@@ -11,4 +11,3 @@ spec/decidim_dummy_app
 development_app
 
 tmp/
-Gemfile.lock

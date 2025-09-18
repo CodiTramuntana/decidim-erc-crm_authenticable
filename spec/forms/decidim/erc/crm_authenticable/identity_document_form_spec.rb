@@ -7,7 +7,7 @@ module Decidim
     module CrmAuthenticable
       describe IdentityDocumentForm do
         let(:form) do
-          described_class.from_params(document_number: document_number).with_context(context)
+          described_class.from_params(document_number:).with_context(context)
         end
 
         let(:organization) { create(:organization) }
@@ -20,37 +20,37 @@ module Decidim
           context "when document_number NOT present" do
             let(:document_number) { nil }
 
-            it { is_expected.to eq(false) }
+            it { is_expected.to be(false) }
           end
 
           context "when document_number NOT is valid against CiviCRM" do
             before { stub_invalid_request_not_member }
 
-            it { is_expected.to eq(false) }
+            it { is_expected.to be(false) }
           end
 
           context "when document_number is valid against CiviCRM" do
             before { stub_valid_request }
 
-            it { is_expected.to eq(true) }
+            it { is_expected.to be(true) }
           end
 
           context "when it fails to connect to CiviCRM" do
             before { stub_invalid_request_connection_error }
 
-            it { is_expected.to eq(false) }
+            it { is_expected.to be(false) }
           end
 
           context "when a user is already registered with a document_number" do
             before do
               create(:user,
-                     organization: organization,
-                     scope: create(:scope, organization: organization),
+                     organization:,
+                     scope: create(:scope, organization:),
                      extended_data: { document_number: Base64.strict_encode64("123456789A") })
               stub_valid_request
             end
 
-            it { is_expected.to eq(false) }
+            it { is_expected.to be(false) }
           end
         end
 
@@ -85,8 +85,8 @@ module Decidim
             before do
               create(:user,
                      nickname: "JD",
-                     organization: organization,
-                     scope: create(:scope, organization: organization))
+                     organization:,
+                     scope: create(:scope, organization:))
               stub_valid_request
               form.validate
             end

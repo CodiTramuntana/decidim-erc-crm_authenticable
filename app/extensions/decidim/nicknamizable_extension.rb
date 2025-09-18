@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Module to add a new method to override Nicknamizable::nicknamize
-module NicknamizableExtension
+module Decidim::NicknamizableExtension
   def self.included(base)
     base.extend ClassMethods
   end

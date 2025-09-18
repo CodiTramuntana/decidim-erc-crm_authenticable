@@ -1,15 +1,8 @@
 name: "[CI] Lint / Lint code"
-
-on:
-  push:
-    branches:
-      - master
-      - release/*
-      - "*-stable"
-  pull_request:
+on: [push]
 
 env:
-  RUBY_VERSION: 2.7.2
+  RUBY_VERSION: 3.2.2
 
 jobs:
   test-report:
@@ -25,7 +18,7 @@ jobs:
           ruby-version: ${{ env.RUBY_VERSION }}
 
       - name: Recover Ruby dependency cache
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: ./vendor/bundle
           key: ${{ runner.OS }}-rubydeps-${{ hashFiles('Gemfile.lock') }}

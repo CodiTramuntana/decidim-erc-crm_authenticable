@@ -21,7 +21,7 @@ describe "civi_crm" do
     let(:response) do
       {
         error: false,
-        body: body
+        body:
       }
     end
 
@@ -258,7 +258,7 @@ describe "civi_crm" do
 
       it "creates Scopes and assign the correct codes" do
         expect { invoke_task }.to change(Decidim::Scope, :count).by(3)
-        codes = Decidim::Scope.all.pluck(:code)
+        codes = Decidim::Scope.pluck(:code)
         expect(codes).to include("4", "1928", "1954")
       end
     end

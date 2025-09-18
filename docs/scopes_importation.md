@@ -5,10 +5,10 @@ In order to sign up users, we need a csv with format:
 ```
 DNI,nom,Email,Tmobil,codi
 
-123456789A,Test User,user@example.org,650650650,2601
+123456789A,Test User,user@example.org,650650650,5117
 ```
 
-This fields are required for sign up. The last field, code, in this case the code 2601, belongs to a local scope. We don't know what code belongs to user and it is given to us in csv. This code must be the **local code** in hierarchy.
+This fields are required for sign up. The last field, code, in this case the code 5117, belongs to a local scope. We don't know what code belongs to user and it is given to us in csv. This code must be the **local code** in hierarchy.
 
 ## Required CSVs (files)
 
@@ -53,7 +53,7 @@ rake erc_auth:csv_import:local_comarcal_relationships
 rake erc_auth:csv_import:local_regional_relationships 
 rake civi_crm:generate:comarcal_exceptions  
 rake civi_crm:generate:decidim_scopes_mapping
-rake civi_crm:create:scopes 
+rake civi_crm:create:scopes
 ```
 
 ## 1. rake erc_auth:csv_import:comarcals

@@ -5,22 +5,22 @@ require "spec_helper"
 describe "Action Authorization", type: :system do
   let(:handler_name) { "crm_authenticable_authorization_handler" }
   let(:organization) { create(:organization, available_authorizations: [handler_name]) }
-  let(:scope) { create(:scope, organization: organization) }
-  let(:participatory_space) { create(:participatory_process, :with_steps, organization: organization) }
+  let(:scope) { create(:scope, organization:) }
+  let(:participatory_space) { create(:participatory_process, :with_steps, organization:) }
   let(:active_step_id) { participatory_space.active_step.id }
   let(:component) do
     create(
       :surveys_component,
-      participatory_space: participatory_space,
-      permissions: permissions,
+      participatory_space:,
+      permissions:,
       step_settings: { active_step_id => { allow_answers: true } }
     )
   end
-  let!(:survey) { create(:survey, component: component) }
+  let!(:survey) { create(:survey, component:) }
   let!(:question) { create(:questionnaire_question, questionnaire: survey.questionnaire, position: 0) }
-  let(:user) { create :user, :confirmed, scope: scope, organization: organization }
-  let!(:authorization) { create(:authorization, name: handler_name, user: user, metadata: metadata) }
-  let(:metadata) { { membership_type_id: "1", join_date: join_date } }
+  let(:user) { create :user, :confirmed, scope:, organization: }
+  let!(:authorization) { create(:authorization, name: handler_name, user:, metadata:) }
+  let(:metadata) { { membership_type_id: "1", join_date: } }
   let(:join_date) { "" }
 
   def answer_survey
@@ -50,7 +50,7 @@ describe "Action Authorization", type: :system do
       visit main_component_path(component)
     end
 
-    context "and the component action is NOT authorized " do
+    context "and the component action is NOT authorized" do
       let(:permissions) { nil }
 
       it "allows to execute the action" do

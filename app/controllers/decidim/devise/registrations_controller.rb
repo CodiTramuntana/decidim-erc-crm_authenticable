@@ -9,6 +9,8 @@ module Decidim
       include Decidim::DeviseControllers
       include NeedsTosAccepted
 
+      helper Decidim::PasswordsHelper
+
       before_action :check_sign_up_enabled
       before_action :configure_permitted_parameters
 
@@ -40,7 +42,7 @@ module Decidim
       # Method overrided.
       # Don't sign_in the user automatically after registration.
       def create
-        @form = form(Decidim::RegistrationForm).from_params(params[:user])
+        @form = form(Decidim::RegistrationForm).from_params(params[:user].merge(current_locale:))
 
         CreateRegistration.call(@form) do
           on(:ok) do
@@ -67,8 +69,12 @@ module Decidim
 
       # Called before resource.save
       def build_resource(hash = nil)
-        super(hash)
+        super
         resource.organization = current_organization
+      end
+
+      def devise_mapping
+        ::Devise.mappings[:user]
       end
     end
   end

@@ -1,42 +1,48 @@
-<% add_decidim_page_title(t(".title")) %>
-<div class="wrapper">
-<div class="row collapse">
-  <div class="row collapse">
-    <div class="columns large-8 large-centered text-center page-title">
-      <h1><%= t(".title") %></h1>
-      <p>
-        <%== t(".subtitle") %>
-      </p>
-      <p>
-        <%= t(".already_have_an_account?") %>
-        <%= link_to t(".sign_in"), new_user_session_path %>
-      </p>
-    </div>
+<% add_decidim_page_title(t(".sign_up")) %>
+
+<%= render layout: "layouts/decidim/shared/layout_center" do %>
+  <div class="flex justify-center">
+    <h1 class="title-decorator my-12"><%= t("decidim.devise.registrations.new.sign_up") %></h1>
   </div>
 
-  <div class="row">
-    <div class="columns large-6 medium-10 medium-centered">
-      <%= decidim_form_for(@form, as: resource_name, url: registration_step_two_path, method: :post, html: { class: "register-form new_user", id: "register-form-step-1" }) do |f| %>
-        <%= invisible_captcha %>
-        <div class="card">
-          <div class="card__content">
-            <div class="user-person">
-              <div class="field">
-                <%= f.text_field :document_number, placeholder: t(".document_number_placeholder") %>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card__content">
-            <div class="actions">
-              <%= f.submit t(".send"), class: "button expanded" %>
-            </div>
-          </div>
-        </div>
-      <% end %>
-    </div>
+  <div class="login__info">
+    <p>
+      <%= t("decidim.devise.registrations.new.subtitle_html").html_safe %>
+    </p>
+    <p class="font-semibold">
+      <%= t("decidim.devise.registrations.new.already_have_an_account?") %>
+      <%= link_to t("decidim.devise.registrations.new.log_in"), new_user_session_path %>
+    </p>
   </div>
-</div>
-</div>
-<div id="sign-up-newsletter-modal"></div>
+
+  <div class="login__info-required">
+    <%= form_required_explanation %>
+  </div>
+
+  <span class="login__info-separator"></span>
+
+  <% cache current_organization do %>
+    <%= render "decidim/devise/shared/omniauth_buttons" %>
+  <% end %>
+
+  <%= decidim_form_for(@form, namespace: "registration", as: resource_name, url: registration_step_two_path, html: { id: "register-form", id: "register-form-step-1" }) do |f| %>
+    <%= invisible_captcha %>
+
+    <div class="form__wrapper">
+      <div class="user-person">
+        <div class="field">
+          <%= f.text_field :document_number, placeholder: t("decidim.devise.registrations.new.document_number_placeholder") %>
+        </div>
+      </div>
+    </div>
+
+    <div class="form__wrapper-block">
+      <button type="submit" class="button button__lg button__secondary">
+        <%= t("decidim.devise.registrations.new.sign_up") %>
+        <%= icon "arrow-right-line", class: "fill-current" %>
+      </button>
+    </div>
+  <% end %>
+<% end %>
+
+<%= render "decidim/devise/shared/newsletter_modal" %>

@@ -8,16 +8,15 @@ module Decidim
       routes { Decidim::Core::Engine.routes }
 
       let(:organization) { create(:organization) }
-      let(:scope) { create(:scope, organization: organization) }
+      let(:scope) { create(:scope, organization:) }
       let!(:user) do
         create(
           :user,
           :confirmed,
           email: "john.doe@example.org",
           password: "ppasswordd",
-          password_confirmation: "ppasswordd",
-          organization: organization,
-          scope: scope,
+          organization:,
+          scope:,
           extended_data: { document_number: Base64.strict_encode64("123456789A") }
         )
       end
@@ -39,7 +38,7 @@ module Decidim
 
           it "does not try to authorize the user against CiviCRM" do
             expect(Decidim::Erc::CrmAuthenticable::UserAuthorizer).not_to receive(:new).with(user)
-            post :create, params: params
+            post(:create, params:)
             expect(controller.flash.notice).to have_content("Signed in successfully.")
           end
         end
@@ -56,7 +55,7 @@ module Decidim
 
           it "does not try to authorize the user against CSV" do
             expect(Decidim::Erc::CrmAuthenticable::UserAuthorizer).not_to receive(:new).with(user)
-            post :create, params: params
+            post(:create, params:)
             expect(controller.flash.notice).to have_content("Signed in successfully.")
           end
         end
@@ -65,7 +64,7 @@ module Decidim
           let(:params) { {} }
 
           it "does NOT log in the user" do
-            post :create, params: params
+            post(:create, params:)
             expect(controller.flash.alert).to have_content("Invalid Email or password.")
           end
         end
@@ -74,7 +73,7 @@ module Decidim
           before { stub_valid_request }
 
           it "logs in the user" do
-            post :create, params: params
+            post(:create, params:)
             expect(controller.flash.notice).to have_content("Signed in successfully.")
           end
         end
@@ -83,7 +82,7 @@ module Decidim
           before { stub_invalid_request_was_member }
 
           it "does NOT log in the user" do
-            post :create, params: params
+            post(:create, params:)
             expect(controller.flash.alert).to have_content("Document number does not correspond to any dues-paying member of Esquerra Republicana.")
           end
         end
@@ -92,7 +91,7 @@ module Decidim
           before { stub_invalid_request_connection_error }
 
           it "does NOT log in the user" do
-            post :create, params: params
+            post(:create, params:)
             expect(controller.flash.alert).to have_content("It was not possible to connect with CiviCRM. Please try again later.")
           end
         end

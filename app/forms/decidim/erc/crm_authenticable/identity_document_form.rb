@@ -22,7 +22,6 @@ module Decidim
 
           {
             name: user_data["display_name"],
-            nickname: nickname,
             email: user_data["email"],
             phone_number: user_data["phone"],
             document_number: encoded_document_number,
@@ -38,9 +37,9 @@ module Decidim
         def document_number_must_be_valid
           return if errors.any? || authorization_handler.document_valid?
 
-          if authorization_handler.errors.keys.include?(:document_number)
+          if authorization_handler.errors.attribute_names.include?(:document_number)
             errors.add(:document_number, I18n.t("document_invalid", scope: "crm_authenticable.errors"))
-          elsif Decidim::Erc::CrmAuthenticable.csv_mode? && authorization_handler.errors.keys.include?(:base)
+          elsif Decidim::Erc::CrmAuthenticable.csv_mode? && authorization_handler.errors.attribute_names.include?(:base)
             errors.add(:base, I18n.t("user_not_found", scope: "census"))
           else
             errors.add(:base, I18n.t("connection_failed", scope: "crm_authenticable.errors"))
@@ -57,7 +56,7 @@ module Decidim
 
         # Caches a CrmAuthenticableAuthorizationHandler instance.
         def authorization_handler
-          @authorization_handler ||= CrmAuthenticableAuthorizationHandler.from_params(document_number: document_number)
+          @authorization_handler ||= CrmAuthenticableAuthorizationHandler.from_params(document_number:)
         end
 
         # Searches User's with the same document_number (encoded) in the metadata attribute.
@@ -70,13 +69,6 @@ module Decidim
         # Returns a Hash with specific user data from CiviCRM.
         def user_data
           @user_data ||= authorization_handler.response[:body][0].slice(*CiviCrmClient::USER_DATA)
-        end
-
-        # Returns a unique nickname scoped to the organization. Removes accents.
-        def nickname
-          initials = user_data["display_name"].split.map { |w| w.chars.first }.join
-          initials_wo_accents = I18n.transliterate(initials)
-          User.nicknamize(initials_wo_accents, organization: current_organization)
         end
 
         def encoded_document_number

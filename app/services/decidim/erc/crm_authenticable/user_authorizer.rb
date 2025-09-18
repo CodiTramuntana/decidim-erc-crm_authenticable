@@ -26,7 +26,7 @@ module Decidim
 
         def authorization_handler
           @authorization_handler ||= CrmAuthenticableAuthorizationHandler.from_params(
-            user: user,
+            user:,
             document_number: Base64.strict_decode64(document_number)
           )
         end
@@ -36,7 +36,7 @@ module Decidim
         end
 
         def revoke_crm_authorization!
-          Authorization.find_by(user: user, name: authorization_handler.handler_name)&.destroy!
+          Authorization.find_by(user:, name: authorization_handler.handler_name)&.destroy!
         end
       end
     end

@@ -5,6 +5,7 @@ module Decidim
     # Custom Devise SessionsController to avoid namespace problems.
     class SessionsController < ::Devise::SessionsController
       include Decidim::DeviseControllers
+      include Decidim::DeviseAuthenticationMethods
 
       before_action :check_sign_in_enabled, only: :create
 

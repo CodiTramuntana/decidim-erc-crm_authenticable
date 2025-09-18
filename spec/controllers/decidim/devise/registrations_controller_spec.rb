@@ -7,7 +7,7 @@ module Decidim
     routes { Decidim::Core::Engine.routes }
 
     let(:organization) { create(:organization) }
-    let!(:scope) { create(:scope, organization: organization, code: "custom_21") }
+    let!(:scope) { create(:scope, organization:, code: "custom_21") }
 
     before do
       request.env["devise.mapping"] = ::Devise.mappings[:user]
@@ -28,7 +28,7 @@ module Decidim
         before { stub_valid_request }
 
         it "renders the new_step_2 template" do
-          post :new_step_2, params: params
+          post(:new_step_2, params:)
           expect(controller).to render_template(:new_step_2)
         end
       end
@@ -37,7 +37,7 @@ module Decidim
         before { stub_invalid_request_not_member }
 
         it "renders the new template" do
-          post :new_step_2, params: params
+          post(:new_step_2, params:)
           expect(controller).to render_template(:new)
         end
       end
@@ -50,9 +50,8 @@ module Decidim
             sign_up_as: "user",
             name: "User",
             nickname: "nickname",
-            email: email,
+            email:,
             password: "rPYWYKQJrXm97b4ytswc",
-            password_confirmation: "rPYWYKQJrXm97b4ytswc",
             tos_agreement: "1",
             newsletter: "0",
             phone_number: Base64.strict_encode64("666-666-666"),
@@ -66,7 +65,7 @@ module Decidim
         let(:email) { "test@example.org" }
 
         it "signs up the user" do
-          post :create, params: params
+          post(:create, params:)
           expect(controller.flash.notice).to have_content("You have signed up successfully.")
         end
       end
@@ -75,7 +74,7 @@ module Decidim
         let(:email) { nil }
 
         it "renders the new_step_two template" do
-          post :create, params: params
+          post(:create, params:)
           expect(controller).to render_template(:new_step_2)
           expect(controller.flash.alert).to have_content("There was a problem creating your account.")
         end
